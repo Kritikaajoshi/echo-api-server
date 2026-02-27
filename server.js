@@ -1,16 +1,21 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; //
 
-// Middleware to handle text and JSON bodies
-app.use(express.text());
-app.use(express.json());
+app.use(express.raw({ type: '*/*' })); //
 
-// Echo logic: respond with the same body received
 app.post('/', (req, res) => {
-    res.send(req.body);
+    const contentType = req.get('Content-Type') || 'text/plain'; //
+    res.set('Content-Type', contentType); //
+    
+    res.send(req.body); //
 });
 
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+
+if (require.main === module) { //
+    app.listen(PORT, () => {
+        console.log(`Echo server listening on port ${PORT}`); //
+    });
+}
+
+module.exports = app; 
